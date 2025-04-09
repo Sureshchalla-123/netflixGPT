@@ -1,5 +1,25 @@
+import Login from "./components/Login";
+import Browse from "./components/Browse";
+import { createBrowserRouter } from "react-router-dom";
+
 function App() {
-  return <div className="text-red-600 text-3xl text-center">Hello world</div>;
+  return (
+    <>
+      <Login />
+      <Browse />
+    </>
+  );
 }
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Login />,
+  },
+  {
+    path: "browse",
+    element: <Browse />,
+  },
+]);
 
 export default App;
