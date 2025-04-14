@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
+import { checkLoginData, checkSignUpData } from "../utils/validate";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const name = useRef(null);
   const email = useRef(null);
@@ -11,10 +13,21 @@ const Login = () => {
     setIsLogin(!isLogin);
   };
 
-  const handleSubmit = () => {
-    console.log(name);
-    console.log(email);
-    console.log(password);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let message;
+
+    if (isLogin) {
+      message = checkLoginData(email.current.value, password.current.value);
+    } else {
+      message = checkSignUpData(
+        name.current.value,
+        email.current.value,
+        password.current.value
+      );
+    }
+
+    message ? setErrorMsg(message) : setErrorMsg(null);
   };
 
   return (
@@ -52,6 +65,7 @@ const Login = () => {
           placeholder="password"
           className="p-2  h-10 bg-transparent border-white border-[1px] rounded"
         />
+        {errorMsg && <p className="text-sm text-red-500">{errorMsg}</p>}
         <button
           type="submit"
           className="bg-red-700 text-white h-10 rounded font-bold"
