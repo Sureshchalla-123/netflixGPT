@@ -1,5 +1,10 @@
 import React, { useRef, useState } from "react";
 import { checkLoginData, checkSignUpData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,8 +31,49 @@ const Login = () => {
         password.current.value
       );
     }
-
     message ? setErrorMsg(message) : setErrorMsg(null);
+
+    if (message) return;
+
+    //signin and signup logic to firebase
+
+    if (!isLogin) {
+      //signup logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+          setErrorMsg(errorMessage);
+        });
+    } else {
+      //signin logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          // ...
+          console.log("User login sucessfully...");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMsg(errorMessage);
+        });
+    }
   };
 
   return (
