@@ -3,8 +3,12 @@ import { checkLoginData, checkSignUpData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +17,9 @@ const Login = () => {
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const handleToggleSigin = () => {
     setIsLogin(!isLogin);
@@ -47,6 +54,26 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+          updateProfile(auth.currentUser, {
+            displayName: name.current.value,
+            photoURL: "https://avatars.githubusercontent.com/u/96934721?v=4",
+          })
+            .then(() => {
+              // Profile updated!
+              // ...
+              const { uid, email, displayName, photoURL } = user;
+              dispatch(addUser({ uid, email, displayName, photoURL }));
+              navigate("/browse");
+            })
+            .catch((error) => {
+              // An error occurred
+              // ...
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              // ..
+              setErrorMsg(errorMessage);
+            });
+
           // ...
         })
         .catch((error) => {
@@ -67,6 +94,7 @@ const Login = () => {
           const user = userCredential.user;
           // ...
           console.log("User login sucessfully...");
+          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -88,7 +116,7 @@ const Login = () => {
       </header>
       <form
         onSubmit={handleSubmit}
-        className="relative w-4/12 flex flex-col mx-auto gap-8 bg-black opacity-80 text-white p-12 rounded-lg"
+        className="relative w-4/12 flex flex-col mx-auto gap-8 bg-black opacity-80 text-white p-12 rounded-lg min-w-[300px]"
       >
         <h1 className="font-bold text-2xl">{isLogin ? "Login" : "Sign up"}</h1>
         {!isLogin && (

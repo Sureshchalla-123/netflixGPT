@@ -17,3 +17,7 @@
 
 - deployed our app to firebase
 - create signup user in firebase
+
+- installed @reduxjs/toolkit in devdep
+- installed react-redux in dep
+- create a store
