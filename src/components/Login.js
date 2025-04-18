@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { checkLoginData, checkSignUpData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
@@ -7,19 +7,28 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
+
+  useEffect(() => {
+    if (user) {
+      console.log("navigating to browse page");
+      navigate("/browse");
+    }
+  });
 
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();
-
-  const navigate = useNavigate();
 
   const handleToggleSigin = () => {
     setIsLogin(!isLogin);
@@ -27,6 +36,8 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     let message;
 
     if (isLogin) {
@@ -40,7 +51,11 @@ const Login = () => {
     }
     message ? setErrorMsg(message) : setErrorMsg(null);
 
-    if (message) return;
+    if (message) {
+      setLoading(false);
+
+      return;
+    }
 
     //signin and signup logic to firebase
 
@@ -63,6 +78,8 @@ const Login = () => {
               // ...
               const { uid, email, displayName, photoURL } = user;
               dispatch(addUser({ uid, email, displayName, photoURL }));
+              setLoading(false);
+
               navigate("/browse");
             })
             .catch((error) => {
@@ -71,6 +88,8 @@ const Login = () => {
               const errorCode = error.code;
               const errorMessage = error.message;
               // ..
+              setLoading(false);
+
               setErrorMsg(errorMessage);
             });
 
@@ -80,6 +99,8 @@ const Login = () => {
           const errorCode = error.code;
           const errorMessage = error.message;
           // ..
+          setLoading(false);
+
           setErrorMsg(errorMessage);
         });
     } else {
@@ -93,12 +114,14 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           // ...
-          console.log("User login sucessfully...");
+          setLoading(false);
+
           navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+          setLoading(false);
           setErrorMsg(errorMessage);
         });
     }
@@ -144,7 +167,7 @@ const Login = () => {
           type="submit"
           className="bg-red-700 text-white h-10 rounded font-bold"
         >
-          {isLogin ? "Login" : "Sign up"}
+          {loading ? "Loading..." : isLogin ? "Login" : "Signup"}
         </button>
         <p className="text-white cursor-pointer" onClick={handleToggleSigin}>
           {isLogin ? "New to Netflix? Sign up now." : "Already a User? Login"}
