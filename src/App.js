@@ -20,7 +20,7 @@ function App() {
         dispatch(removeUser());
       }
     });
-  }, []);
+  });
 
   const router = createBrowserRouter([
     {

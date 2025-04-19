@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { checkLoginData, checkSignUpData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
@@ -9,26 +9,25 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { AVATAR_URL, LOGO } from "../utils/constants";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-  const user = useSelector((store) => store.user);
-
-  useEffect(() => {
-    if (user) {
-      console.log("navigating to browse page");
-      navigate("/browse");
-    }
-  });
-
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
+
+  if (user) {
+    navigate("/browse");
+    return;
+  }
 
   const handleToggleSigin = () => {
     setIsLogin(!isLogin);
@@ -67,15 +66,12 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-          // Signed up
           const user = userCredential.user;
           updateProfile(auth.currentUser, {
             displayName: name.current.value,
-            photoURL: "https://avatars.githubusercontent.com/u/96934721?v=4",
+            photoURL: AVATAR_URL,
           })
             .then(() => {
-              // Profile updated!
-              // ...
               const { uid, email, displayName, photoURL } = user;
               dispatch(addUser({ uid, email, displayName, photoURL }));
               setLoading(false);
@@ -83,22 +79,17 @@ const Login = () => {
               navigate("/browse");
             })
             .catch((error) => {
-              // An error occurred
-              // ...
               const errorCode = error.code;
               const errorMessage = error.message;
-              // ..
+
               setLoading(false);
 
               setErrorMsg(errorMessage);
             });
-
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          // ..
           setLoading(false);
 
           setErrorMsg(errorMessage);
@@ -113,7 +104,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          // ...
           setLoading(false);
 
           navigate("/browse");
@@ -131,11 +121,7 @@ const Login = () => {
     <div className="relative bg-[url(https://assets.nflxext.com/ffe/siteui/vlv3/e8a8e44f-ffcf-490c-ad60-b7febe7736d0/web/IN-en-20250407-TRIFECTA-perspective_0d56dee1-00dd-4425-af41-40aee72b1038_small.jpg)] bg-cover bg-center h-screen ">
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-blac/20 h-screen"></div>
       <header>
-        <img
-          className="relative h-20 pt-3 px-14"
-          src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production/consent/87b6a5c0-0104-4e96-a291-092c11350111/01938dc4-59b3-7bbc-b635-c4131030e85f/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-          alt="logo"
-        />
+        <img className="relative h-20 pt-3 px-14" src={LOGO} alt="logo" />
       </header>
       <form
         onSubmit={handleSubmit}
