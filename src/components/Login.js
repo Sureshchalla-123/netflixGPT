@@ -79,7 +79,6 @@ const Login = () => {
               navigate("/browse");
             })
             .catch((error) => {
-              const errorCode = error.code;
               const errorMessage = error.message;
 
               setLoading(false);
@@ -88,7 +87,7 @@ const Login = () => {
             });
         })
         .catch((error) => {
-          const errorCode = error.code;
+          //const errorCode = error.code;
           const errorMessage = error.message;
           setLoading(false);
 
@@ -103,13 +102,13 @@ const Login = () => {
       )
         .then((userCredential) => {
           // Signed in
-          const user = userCredential.user;
+          //const user = userCredential.user;
           setLoading(false);
 
           navigate("/browse");
         })
         .catch((error) => {
-          const errorCode = error.code;
+          //const errorCode = error.code;
           const errorMessage = error.message;
           setLoading(false);
           setErrorMsg(errorMessage);

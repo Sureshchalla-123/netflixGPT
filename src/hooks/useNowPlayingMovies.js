@@ -8,12 +8,12 @@ const useNowPlayingMovies = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     getNowPlayingMovies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getNowPlayingMovies = async () => {
     const data = await fetch(API_URL, API_OPTIONS);
     const json = await data.json();
-    console.log(json.results);
     dispatch(nowPlayingMovies(json.results));
   };
 };

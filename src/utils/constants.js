@@ -14,3 +14,8 @@ export const API_OPTIONS = {
 };
 
 export const API_URL = "https://api.themoviedb.org/3/movie/now_playing";
+
+export const API_KEY = "49f751e05719ef47fc193939217a5a90";
+
+export const API_TOKEN =
+  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0OWY3NTFlMDU3MTllZjQ3ZmMxOTM5MzkyMTdhNWE5MCIsIm5iZiI6MTc0NDk4ODgwMC41LCJzdWIiOiI2ODAyNmE4MGU1MDZhOGUzYTBhZDQ0MmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.LVNYjfSlUX5gYRpxsrIYiYWSkGsmWrVNDuPkQHLdQVE";

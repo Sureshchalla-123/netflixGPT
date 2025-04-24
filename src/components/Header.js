@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex justify-between items-center px-8">
+    <div className="position-absolute top-0 left-0  flex justify-between items-center px-8">
       <div>
         <img className="w-[200px]" src={LOGO} alt="logo" />
       </div>
